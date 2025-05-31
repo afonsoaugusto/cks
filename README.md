@@ -1,3 +1,6 @@
+[![afonsoaugusto - cks](https://img.shields.io/static/v1?label=afonsoaugusto&message=cks&color=blue&logo=github)](https://github.com/afonsoaugusto/cks "Go to GitHub repo")
+[![stars - cks](https://img.shields.io/github/stars/afonsoaugusto/cks?style=social)](https://github.com/afonsoaugusto/cks)
+[![forks - cks](https://img.shields.io/github/forks/afonsoaugusto/cks?style=social)](https://github.com/afonsoaugusto/cks)
 
 # Certified Kubernetes Security Specialist (CKS) Exam Curriculum
 
