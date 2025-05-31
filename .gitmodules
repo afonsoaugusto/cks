@@ -1,0 +1,3 @@
+[submodule "course-resources/certified-kubernetes-security-specialist"]
+	path = course-resources/certified-kubernetes-security-specialist
+	url = https://github.com/zealvora/certified-kubernetes-security-specialist

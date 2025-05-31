@@ -9,9 +9,11 @@ Website: [cncf.io](https://cncf.io)
 
 ---
 
-## Visão Geral
+## Cursos
 
-Este documento fornece o esboço do currículo de Conhecimentos, Habilidades e Capacidades que um **Certified Kubernetes Security Specialist (CKS)** deve demonstrar.
+Lab: <https://learn.kodekloud.com/user/courses/cks-challenges>
+Udemy: <https://www.udemy.com/course/certified-kubernetes-security-specialist-certification>
+  Coupom: **CKS-MAY-25** (R$ 64,90)
 
 ---
 
