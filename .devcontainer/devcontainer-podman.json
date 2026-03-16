@@ -1,0 +1,31 @@
+{
+	"name": "CKS Lab (Podman)",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"mounts": [
+		"source=${localEnv:PODMAN_SOCKET},target=/var/run/docker.sock,type=bind"
+	],
+	"containerEnv": {
+		"CONTAINER_HOST": "unix:///var/run/docker.sock",
+		"KIND_EXPERIMENTAL_PROVIDER": "podman"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"redhat.vscode-yaml",
+				"ms-azuretools.vscode-docker",
+				"StackSpotAI.StackSpotAI",
+				"GitHub.copilot",
+				"GitHub.copilot-chat"
+			],
+			"settings": {
+				"yaml.schemas": {
+					"kubernetes": "*.yaml"
+				}
+			}
+		}
+	},
+	"forwardPorts": [6443, 30000, 30443, 31080, 31443],
+	"postCreateCommand": "bash .devcontainer/install-cks-lab-podman.sh",
+	"remoteUser": "vscode"
+}

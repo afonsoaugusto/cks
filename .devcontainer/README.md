@@ -15,6 +15,8 @@ Ambiente de desenvolvimento e laboratório para preparação ao exame **Certifie
 2. Use **“Reopen in Container”** (Dev Containers) ou **“Codespaces”** para iniciar o ambiente.
 3. Após o build, as ferramentas estarão disponíveis no terminal.
 
+**Alternativa sem container:** para rodar o lab só no host (Mac/Linux), use `./scripts/setup-local-lab.sh cks-lab` (requer Docker ou Podman). Veja [README.md](../README.md#opção-1-rodar-localmente-sem-devcontainer).
+
 ## Usar com Podman na sua máquina
 
 **Sim, o fluxo funciona com Podman.**
@@ -49,18 +51,48 @@ Ou edite o `settings.json` do usuário e adicione:
 
 Depois disso, use **Reopen in Container** de novo. No Mac/Windows, se o Podman rodar em máquina virtual, inicie antes: `podman machine start`.
 
+### Erro "An error occurred building the image" (podman buildx build)
+
+O Dev Containers usa **buildx** para construir a imagem com *features* (kubectl, Docker-in-Docker, etc.). O **Podman** não suporta bem esse fluxo (build-context, BuildKit), então o build pode falhar.
+
+**Solução: usar a configuração que não faz build**
+
+1. Faça backup e troque a configuração:
+   ```bash
+   cd /caminho/para/cks
+   mv .devcontainer/devcontainer.json .devcontainer/devcontainer-docker.json
+   cp .devcontainer/devcontainer-podman.json .devcontainer/devcontainer.json
+   ```
+2. No Cursor, **Reopen in Container**.
+
+A **devcontainer-podman.json** usa só uma **imagem pré-pronta** (sem build) e instala as ferramentas (kubectl, helm, podman-remote, trivy, kube-bench, kind, bom, yq, kubeconform) no **postCreateCommand**. A primeira abertura pode levar alguns minutos.
+
+**Kind dentro do container (com Podman no host):** O devcontainer monta o socket do host em **`/var/run/docker.sock`** (no Mac com Podman Machine esse é o socket de compatibilidade Docker). Dentro do container é instalado o **podman-remote**, com `CONTAINER_HOST=unix:///var/run/docker.sock` e `KIND_EXPERIMENTAL_PROVIDER=podman`. Assim você pode rodar **dentro do container** `./scripts/kind-create-cluster.sh` — o Kind usará o Podman do host para criar os nós.
+
+**Mac:** No macOS o socket do Podman fica em um path **dinâmico** (em `TMPDIR`). O devcontainer monta o socket usando a variável de ambiente do host **`PODMAN_SOCKET`**.
+
+**Opção A – Manual (uma sessão):** No terminal, `export PODMAN_SOCKET=$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')` e abra o Cursor por esse terminal.
+
+**Opção B – Fixa (recomendada):** Rode uma vez o script que adiciona o export ao seu `~/.zshrc` (ou `.bashrc`). Depois disso, qualquer terminal e o Cursor herdam a variável; não precisa abrir o Cursor pelo terminal.
+   ```bash
+   ./scripts/setup-podman-env.sh
+   source ~/.zshrc   # ou feche e reabra o terminal
+   podman machine start
+   ```
+   Em seguida abra o Cursor e use **Reopen in Container** normalmente.
+
+**Alternativa (symlink fixo):** Se preferir um path fixo em vez da variável, crie o symlink e altere o mount no `devcontainer.json` para `source=${localEnv:HOME}/.local/share/containers/podman/machine/podman.sock,...`:
+   ```bash
+   mkdir -p ~/.local/share/containers/podman/machine
+   ln -sf "$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')" ~/.local/share/containers/podman/machine/podman.sock
+   ```
+   Recrie o symlink após reiniciar o Mac (o path em TMPDIR muda).
+
 ### Kind e Minikube com Podman
 
-- **Kind:** No host com Podman:
-  ```bash
-  export KIND_EXPERIMENTAL_PROVIDER=podman
-  ./scripts/kind-create-cluster.sh cks-lab
-  ```
-  Requer Kind 0.22+ e Podman 5+ (em alguns ambientes rootless o Kind pode ter limitações).
-- **Minikube:** Suporta driver **podman** nativamente:
-  ```bash
-  minikube start --driver=podman
-  ```
+- **Kind dentro do dev container:** Com a configuração atual (socket montado + podman-remote), rode **dentro do container**: `./scripts/kind-create-cluster.sh cks-lab`. O Kind usa o Podman do host.
+- **Kind no host (alternativa):** Se preferir criar o cluster no Mac: `export KIND_EXPERIMENTAL_PROVIDER=podman && ./scripts/kind-create-cluster.sh cks-lab`. Depois use o mesmo `KUBECONFIG` no container.
+- **Minikube:** Suporta driver **podman** no host: `minikube start --driver=podman`.
 
 ## Criar um cluster para lab
 

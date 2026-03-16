@@ -4,17 +4,24 @@
 set -e
 
 BIN_DIR="${BIN_DIR:-/usr/local/bin}"
-TRIVY_VERSION="${TRIVY_VERSION:-0.52.0}"
+TRIVY_VERSION="${TRIVY_VERSION:-0.69.3}"
 KUBE_BENCH_VERSION="${KUBE_BENCH_VERSION:-0.6.3}"
+
+# Trivy arch: Linux-64bit (amd64) or Linux-ARM64 (aarch64)
+TRIVY_ARCH="Linux-64bit"
+case "$(uname -m)" in aarch64|arm64) TRIVY_ARCH="Linux-ARM64";; esac
 KIND_VERSION="${KIND_VERSION:-v0.25.0}"
-BOM_VERSION="${BOM_VERSION:-v0.8.1}"
+BOM_VERSION="${BOM_VERSION:-v0.7.1}"
+# bom arch: amd64 or arm64 (asset name bom-<arch>-linux)
+BOM_ARCH="amd64"
+case "$(uname -m)" in aarch64|arm64) BOM_ARCH="arm64";; esac
 YQ_VERSION="${YQ_VERSION:-v4.44.2}"
 
 # Trivy - scan de vulnerabilidades e SBOM
 install_trivy() {
   if command -v trivy &>/dev/null; then return; fi
-  echo "Installing Trivy ${TRIVY_VERSION}..."
-  curl -sSfL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" \
+  echo "Installing Trivy ${TRIVY_VERSION} (${TRIVY_ARCH})..."
+  curl -sSfL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_${TRIVY_ARCH}.tar.gz" \
     | tar -xz -C /tmp && mv /tmp/trivy "$BIN_DIR" && chmod +x "$BIN_DIR/trivy"
 }
 
@@ -37,9 +44,9 @@ install_kind() {
 # bom - Bill of Materials (SBOM SPDX)
 install_bom() {
   if command -v bom &>/dev/null; then return; fi
-  echo "Installing bom ${BOM_VERSION}..."
-  curl -sSfL "https://github.com/kubernetes-sigs/bom/releases/download/${BOM_VERSION}/bom-linux-amd64" \
-    -o /tmp/bom && chmod +x /tmp/bom && mv /tmp/bom "$BIN_DIR"
+  echo "Installing bom ${BOM_VERSION} (${BOM_ARCH})..."
+  curl -sSfL "https://github.com/kubernetes-sigs/bom/releases/download/${BOM_VERSION}/bom-${BOM_ARCH}-linux" \
+    -o /tmp/bom-${BOM_ARCH}-linux && chmod +x /tmp/bom-${BOM_ARCH}-linux && mv /tmp/bom-${BOM_ARCH}-linux "$BIN_DIR/bom"
 }
 
 # yq - YAML/JSON (útil para audit logs e manifests)

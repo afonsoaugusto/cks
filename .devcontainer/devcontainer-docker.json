@@ -1,0 +1,52 @@
+{
+	"name": "CKS Lab",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": "."
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"enableNonRootDocker": "true",
+			"moby": "true"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "1.30",
+			"helm": "latest",
+			"minikube": "latest"
+		},
+		"ghcr.io/devcontainers/features/go:1": {
+			"version": "1.24"
+		},
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.12"
+		},
+		"ghcr.io/va-h/devcontainers-features/uv:1": {
+			"shellautocompletion": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers-extra/features/kubectx-kubens:1": {
+			"version": "latest"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"redhat.vscode-yaml",
+				"ms-azuretools.vscode-docker",
+				"StackSpotAI.StackSpotAI",
+				"GitHub.copilot",
+				"GitHub.copilot-chat"
+			],
+			"settings": {
+				"yaml.schemas": {
+					"kubernetes": "*.yaml"
+				}
+			}
+		}
+	},
+	"forwardPorts": [6443, 30000, 30443, 31080, 31443],
+	"postCreateCommand": "bash -c '[ -f .devcontainer/verify-cks-tools.sh ] && .devcontainer/verify-cks-tools.sh || true'",
+	"remoteUser": "vscode"
+}

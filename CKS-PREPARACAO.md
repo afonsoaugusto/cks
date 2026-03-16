@@ -17,7 +17,8 @@ Documento de preparação para o exame **Certified Kubernetes Security Specialis
 **Recomendações:**  
 - Inicialize o submódulo para material extra: `git submodule update --init`  
 - Use o **lab.txt** como referência de comandos e fluxos; pratique cada tipo de questão até automatizar.  
-- No ambiente de lab (devcontainer): após criar o cluster com `scripts/kind-create-cluster.sh`, rode `scripts/create-lab-namespaces.sh` para criar os namespaces do simulador.  
+- **Lab local (sem devcontainer):** rode `./scripts/setup-local-lab.sh cks-lab` (requer Docker ou Podman). Depois: `export KUBECONFIG=$(kind get kubeconfig --name cks-lab)`.  
+- **Devcontainer:** após criar o cluster com `scripts/kind-create-cluster.sh`, rode `scripts/create-lab-namespaces.sh`.  
 - **Podman:** o dev container e o Kind funcionam com Podman; veja a seção "Usar com Podman" em [.devcontainer/README.md](.devcontainer/README.md).
 
 ---
@@ -322,6 +323,26 @@ echo statefulset-nginx.yaml >> /opt/course/22/security-issues
 ---
 
 ## 4. Ações diárias de preparação
+
+### Comandos diários (lab local, sem devcontainer)
+
+Se você rodou `./scripts/setup-local-lab.sh cks-lab` no host, use estes comandos no início de cada sessão (ou adicione ao `~/.zshrc`):
+
+```bash
+# Apontar para o cluster do lab
+export KUBECONFIG=$(kind get kubeconfig --name cks-lab)
+
+# Verificar cluster e namespaces
+kubectl get nodes && kubectl get ns
+
+# Se precisar recriar namespaces
+./scripts/create-lab-namespaces.sh
+
+# Resetar cluster do zero
+kind delete cluster --name cks-lab && ./scripts/setup-local-lab.sh cks-lab
+```
+
+Com ferramentas em `./bin`: `export PATH="$PWD/bin:$PATH"` (ou o caminho absoluto do repo).
 
 ### Semana 1 – Base e Cluster Setup/Hardening
 

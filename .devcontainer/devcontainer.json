@@ -1,33 +1,12 @@
 {
-	"name": "CKS Lab",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"context": "."
-	},
-	"features": {
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {
-			"enableNonRootDocker": "true",
-			"moby": "true"
-		},
-		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
-			"version": "1.30",
-			"helm": "latest",
-			"minikube": "latest"
-		},
-		"ghcr.io/devcontainers/features/go:1": {
-			"version": "1.24"
-		},
-		"ghcr.io/devcontainers/features/python:1": {
-			"installTools": true,
-			"version": "3.12"
-		},
-		"ghcr.io/va-h/devcontainers-features/uv:1": {
-			"shellautocompletion": true,
-			"version": "latest"
-		},
-		"ghcr.io/devcontainers-extra/features/kubectx-kubens:1": {
-			"version": "latest"
-		}
+	"name": "CKS Lab (Podman)",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"mounts": [
+		"source=${localEnv:PODMAN_SOCKET},target=/var/run/docker.sock,type=bind"
+	],
+	"containerEnv": {
+		"CONTAINER_HOST": "unix:///var/run/docker.sock",
+		"KIND_EXPERIMENTAL_PROVIDER": "podman"
 	},
 	"customizations": {
 		"vscode": {
@@ -47,6 +26,6 @@
 		}
 	},
 	"forwardPorts": [6443, 30000, 30443, 31080, 31443],
-	"postCreateCommand": "bash -c '[ -f .devcontainer/verify-cks-tools.sh ] && .devcontainer/verify-cks-tools.sh || true'",
+	"postCreateCommand": "bash .devcontainer/install-cks-lab-podman.sh",
 	"remoteUser": "vscode"
 }

@@ -9,6 +9,20 @@ Website: [cncf.io](https://cncf.io)
 
 ---
 
+## Documentação (arquivos Markdown)
+
+| Arquivo | Descrição |
+|---------|-----------|
+| [README.md](./README.md) | Este arquivo — visão geral do repositório CKS. |
+| [CKS-PREPARACAO.md](./CKS-PREPARACAO.md) | Guia de preparação para a prova CKS: comandos, plano de estudo e checklist. |
+| [LINKS-KCNA-KCSA-NOTEBOOKLM.md](./LINKS-KCNA-KCSA-NOTEBOOKLM.md) | Lista de links para preparação KCNA e KCSA (para uso no NotebookLM). |
+| [PERGUNTAS-RESPOSTAS-KCNA-KCSA.md](./PERGUNTAS-RESPOSTAS-KCNA-KCSA.md) | Perguntas e respostas com explicações para as provas KCNA e KCSA. |
+| [.devcontainer/README.md](./.devcontainer/README.md) | Instruções do Dev Container (Docker/Podman) para o lab CKS. |
+| [apparmor/README.md](./apparmor/README.md) | Documentação do diretório AppArmor (perfis e uso no lab). |
+| [PROMPTS-NOTEBOOKLM-AUDIO.md](./PROMPTS-NOTEBOOKLM-AUDIO.md) | Prompts para usar no NotebookLM e gerar áudio explicativo de cada tópico CKS. |
+
+---
+
 ## Preparação para a prova
 
 **[CKS-PREPARACAO.md](./CKS-PREPARACAO.md)** — Guia de preparação com:
@@ -19,7 +33,28 @@ Website: [cncf.io](https://cncf.io)
 
 ---
 
-## Ambiente de lab (Dev Container)
+## Ambiente de lab
+
+### Opção 1: Rodar localmente (sem devcontainer)
+
+No seu Mac ou Linux, com **Docker** ou **Podman** instalado:
+
+```bash
+# Com Podman (opcional): export KIND_EXPERIMENTAL_PROVIDER=podman
+./scripts/setup-local-lab.sh cks-lab
+```
+
+Esse script instala as ferramentas (kind, kubectl, trivy, kube-bench, yq, etc.) em `./bin`, cria o cluster Kind e os namespaces dos labs. Depois, use no terminal:
+
+```bash
+export KUBECONFIG=$(kind get kubeconfig --name cks-lab)
+kubectl get nodes && kubectl get ns
+```
+
+Se preferir instalar as ferramentas manualmente: `./scripts/install-cks-tools-local.sh` e depois `./scripts/kind-create-cluster.sh cks-lab` e `./scripts/create-lab-namespaces.sh`.  
+Comandos diários e plano de estudo: [CKS-PREPARACAO.md](CKS-PREPARACAO.md).
+
+### Opção 2: Dev Container
 
 Use **Reopen in Container** no VS Code/Cursor para subir o ambiente **CKS Lab** com:
 
@@ -44,7 +79,7 @@ Detalhes do ambiente: [.devcontainer/README.md](.devcontainer/README.md)
 | **lab.txt** | Simulador Killer.sh CKS (K8s 1.32): 23 questões com respostas. Material principal de prática. |
 | **CKS-PREPARACAO.md** | Guia de estudo: comandos essenciais + plano diário. |
 | **.devcontainer/** | Ambiente **CKS Lab**: Docker, kubectl, Kind, Minikube, Trivy, kube-bench, bom, yq, etc. |
-| **scripts/** | `kind-create-cluster.sh` — cria cluster Kind para labs. `create-lab-namespaces.sh` — cria namespaces do simulador (team-red, team-blue, etc.). |
+| **scripts/** | `setup-local-lab.sh` — lab local (instala ferramentas + cluster + namespaces). `install-cks-tools-local.sh` — instala kind, kubectl, trivy, etc. no host. `kind-create-cluster.sh`, `create-lab-namespaces.sh` — cluster e namespaces. |
 | **course-resources/** | Submódulo Git com material extra. Inicialize com: `git submodule update --init` |
 
 ---
