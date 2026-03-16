@@ -9,6 +9,46 @@ Website: [cncf.io](https://cncf.io)
 
 ---
 
+## Preparação para a prova
+
+**[CKS-PREPARACAO.md](./CKS-PREPARACAO.md)** — Guia de preparação com:
+- Revisão do repositório e uso do material
+- Comandos que precisam estar na ponta do dedo (por domínio)
+- Plano de ações diárias (4 semanas) até a prova
+- Checklist rápido e referências externas
+
+---
+
+## Ambiente de lab (Dev Container)
+
+Use **Reopen in Container** no VS Code/Cursor para subir o ambiente **CKS Lab** com:
+
+- **kubectl**, **Kind**, **Minikube**, **Helm**
+- **Trivy**, **kube-bench**, **bom** (SBOM), **kubeconform**, **yq**
+- Docker-in-Docker, **kubectx/kubens**, Go, Python
+
+Depois, crie um cluster e os namespaces dos labs:
+
+- `./scripts/kind-create-cluster.sh cks-lab`
+- `./scripts/create-lab-namespaces.sh`
+
+**Usando Podman:** o Dev Container e o Kind funcionam com Podman; veja [.devcontainer/README.md](.devcontainer/README.md#usar-com-podman-na-sua-máquina).  
+Detalhes do ambiente: [.devcontainer/README.md](.devcontainer/README.md)
+
+---
+
+## Conteúdo do repositório (revisão)
+
+| Recurso | Descrição |
+|--------|-----------|
+| **lab.txt** | Simulador Killer.sh CKS (K8s 1.32): 23 questões com respostas. Material principal de prática. |
+| **CKS-PREPARACAO.md** | Guia de estudo: comandos essenciais + plano diário. |
+| **.devcontainer/** | Ambiente **CKS Lab**: Docker, kubectl, Kind, Minikube, Trivy, kube-bench, bom, yq, etc. |
+| **scripts/** | `kind-create-cluster.sh` — cria cluster Kind para labs. `create-lab-namespaces.sh` — cria namespaces do simulador (team-red, team-blue, etc.). |
+| **course-resources/** | Submódulo Git com material extra. Inicialize com: `git submodule update --init` |
+
+---
+
 ## Cursos
 
 Lab: <https://learn.kodekloud.com/user/courses/cks-challenges>

@@ -1,0 +1,6 @@
+{
+	// Usar Podman em vez de Docker para Dev Containers (quando Docker não está instalado).
+	// Remova ou comente estas linhas se você usar Docker.
+	"dev.containers.dockerPath": "podman",
+	"dev.containers.mountWaylandSocket": false
+}
