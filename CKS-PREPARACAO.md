@@ -38,7 +38,7 @@ Documento de preparação para o exame **Certified Kubernetes Security Specialis
 
 ## 3. Comandos na ponta do dedo
 
-### 3.1 kubectl e contexto
+### 3.1 kubectl e contexto — [detalhamento](detalhamento/3.1-kubectl-contexto.md)
 
 ```bash
 # Contextos: listar e usar
@@ -51,7 +51,7 @@ k config use-context <context-name>
 k config view --raw -o jsonpath='{.users[?(@.name=="restricted@infra-prod")].user.client-certificate-data}' | base64 -d > /opt/course/1/cert
 ```
 
-### 3.2 RBAC
+### 3.2 RBAC — [detalhamento](detalhamento/3.2-rbac.md)
 
 ```bash
 # Verificar permissões (impersonation)
@@ -64,7 +64,7 @@ k create rolebinding <name> --clusterrole=<clusterrole> --user=<user> -n <namesp
 # Para cada namespace: security, restricted, internal
 ```
 
-### 3.3 Pod Security Standards
+### 3.3 Pod Security Standards — [detalhamento](detalhamento/3.3-pod-security-standards.md)
 
 ```bash
 # Aplicar baseline (ou restricted) no namespace
@@ -74,7 +74,7 @@ k label ns <namespace> pod-security.kubernetes.io/audit=baseline
 k label ns <namespace> pod-security.kubernetes.io/warn=baseline
 ```
 
-### 3.4 API Server (manifest estático)
+### 3.4 API Server (manifest estático) — [detalhamento](detalhamento/3.4-api-server-manifest.md)
 
 ```bash
 # Backup SEMPRE fora de /etc/kubernetes/manifests (senão vira Pod)
@@ -89,7 +89,7 @@ k delete svc kubernetes
 # K8s recria automaticamente como ClusterIP
 ```
 
-### 3.5 kube-bench (CIS)
+### 3.5 kube-bench (CIS) — [detalhamento](detalhamento/3.5-kube-bench-cis.md)
 
 ```bash
 # Control plane
@@ -107,7 +107,7 @@ chown etcd:etcd /var/lib/etcd
 chmod 600 /var/lib/kubelet/config.yaml
 ```
 
-### 3.6 Verificação de binários (SHA512)
+### 3.6 Verificação de binários (SHA512) — [detalhamento](detalhamento/3.6-verificacao-binarios-sha512.md)
 
 ```bash
 sha512sum /opt/course/6/binaries/*
@@ -115,7 +115,7 @@ sha512sum /opt/course/6/binaries/*
 rm /opt/course/6/binaries/<binary-name>
 ```
 
-### 3.7 Kubelet config
+### 3.7 Kubelet config — [detalhamento](detalhamento/3.7-kubelet-config.md)
 
 ```bash
 # Localização típica
@@ -126,7 +126,7 @@ chmod 600 /var/lib/kubelet/config.yaml
 # clientCAFile em authentication.x509.clientCAFile
 ```
 
-### 3.8 NetworkPolicy (Kubernetes nativa)
+### 3.8 NetworkPolicy (Kubernetes nativa) — [detalhamento](detalhamento/3.8-networkpolicy.md)
 
 ```bash
 # Deny egress para IP específico (metadata server)
@@ -140,7 +140,7 @@ k apply -f metadata-deny.yaml
 k apply -f metadata-allow.yaml
 ```
 
-### 3.9 Cilium NetworkPolicy
+### 3.9 Cilium NetworkPolicy — [detalhamento](detalhamento/3.9-cilium-networkpolicy.md)
 
 ```bash
 k get cnp -n <namespace>
@@ -148,7 +148,7 @@ k apply -f policy.yaml   # kind: CiliumNetworkPolicy, apiVersion: cilium.io/v2
 # Estrutura: endpointSelector, egress/egressDeny, toEndpoints, authentication (mTLS)
 ```
 
-### 3.10 AppArmor
+### 3.10 AppArmor — [detalhamento](detalhamento/3.10-apparmor.md)
 
 ```bash
 # No nó: carregar perfil
@@ -163,7 +163,7 @@ k label node <node-name> security=apparmor
 # securityContext.appArmorProfile.localhostProfile: <profile-name>
 ```
 
-### 3.11 RuntimeClass (gVisor/runsc)
+### 3.11 RuntimeClass (gVisor/runsc) — [detalhamento](detalhamento/3.11-runtimeclass-gvisor.md)
 
 ```bash
 # Criar RuntimeClass
@@ -174,7 +174,7 @@ k label node <node-name> security=apparmor
 # spec.nodeName: <node com runsc>
 ```
 
-### 3.12 Secrets no etcd
+### 3.12 Secrets no etcd — [detalhamento](detalhamento/3.12-secrets-etcd.md)
 
 ```bash
 # Certificados do apiserver para etcd
@@ -190,7 +190,7 @@ ETCDCTL_API=3 etcdctl \
 echo <base64-value> | base64 -d
 ```
 
-### 3.13 “Hack” Secrets (RBAC escape)
+### 3.13 "Hack" Secrets (RBAC escape) — [detalhamento](detalhamento/3.13-hack-secrets-rbac-escape.md)
 
 ```bash
 # Listar pods e ver onde secrets estão montados
@@ -208,7 +208,7 @@ curl -k -H "Authorization: Bearer $(cat /run/secrets/kubernetes.io/serviceaccoun
 # Decodificar .data.password com base64 -d
 ```
 
-### 3.14 Falco
+### 3.14 Falco — [detalhamento](detalhamento/3.14-falco.md)
 
 ```bash
 # Rodar (unbuffered para ver rápido)
@@ -219,14 +219,14 @@ sudo falco -U
 # crictl ps -a, crictl inspect <id> para achar container/pod
 ```
 
-### 3.15 TLS no Ingress
+### 3.15 TLS no Ingress — [detalhamento](detalhamento/3.15-tls-ingress.md)
 
 ```bash
 k -n <ns> create secret tls tls-secret --cert=tls.crt --key=tls.key
 # No Ingress: spec.tls[].secretName: tls-secret, hosts: [...]
 ```
 
-### 3.16 Audit log
+### 3.16 Audit log — [detalhamento](detalhamento/3.16-audit-log.md)
 
 ```bash
 # Apiserver: --audit-policy-file, --audit-log-path, --audit-log-maxbackup=1
@@ -235,7 +235,7 @@ k -n <ns> create secret tls tls-secret --cert=tls.crt --key=tls.key
 echo > /etc/kubernetes/audit/logs/audit.log   # limpar log
 ```
 
-### 3.17 SBOM e vulnerabilidades
+### 3.17 SBOM e vulnerabilidades — [detalhamento](detalhamento/3.17-sbom-vulnerabilidades.md)
 
 ```bash
 # bom (SPDX)
@@ -246,7 +246,7 @@ trivy image --format cyclonedx --output sbom2.json <image>
 trivy sbom sbom_check.json --format json --output sbom_check_result.json
 ```
 
-### 3.18 Root filesystem read-only (imutabilidade)
+### 3.18 Root filesystem read-only (imutabilidade) — [detalhamento](detalhamento/3.18-readonly-root-filesystem.md)
 
 ```yaml
 # No container:
@@ -255,7 +255,7 @@ trivy sbom sbom_check.json --format json --output sbom_check_result.json
 # volumes: emptyDir: {}
 ```
 
-### 3.19 Atualizar Kubernetes (kubeadm)
+### 3.19 Atualizar Kubernetes (kubeadm) — [detalhamento](detalhamento/3.19-atualizar-kubernetes-kubeadm.md)
 
 ```bash
 # Control plane
@@ -273,7 +273,7 @@ k drain <worker-node> --ignore-daemonsets
 k uncordon <worker-node>
 ```
 
-### 3.20 ImagePolicyWebhook
+### 3.20 ImagePolicyWebhook — [detalhamento](detalhamento/3.20-imagepolicywebhook.md)
 
 ```yaml
 # admission-config.yaml (AdmissionConfiguration)
@@ -283,7 +283,7 @@ k uncordon <worker-node>
 # volumeMount: /opt/course/23/webhook -> /etc/kubernetes/webhook
 ```
 
-### 3.21 Syscalls (strace)
+### 3.21 Syscalls (strace) — [detalhamento](detalhamento/3.21-syscalls-strace.md)
 
 ```bash
 # No nó: achar PID do container
@@ -294,7 +294,7 @@ strace -p <PID>   # procurar syscall proibida (ex: kill)
 # Scale deployment com pod ofensor: k scale deploy <name> --replicas 0
 ```
 
-### 3.22 crictl / containers
+### 3.22 crictl / containers — [detalhamento](detalhamento/3.22-crictl-containers.md)
 
 ```bash
 crictl ps -a
@@ -303,7 +303,7 @@ crictl inspect <container-id>  # apparmor, args, etc.
 # Container ID -> Pod: crictl ps -id <container-id>
 ```
 
-### 3.23 Utilitários de rede / debug
+### 3.23 Utilitários de rede / debug — [detalhamento](detalhamento/3.23-utilitarios-rede-debug.md)
 
 ```bash
 # Testar acesso
@@ -311,7 +311,7 @@ k exec -it -n <ns> <pod> -- curl -m 2 http://<ip>:port
 # Testar policy: ping, curl para outro pod/svc
 ```
 
-### 3.24 Análise estática (security-issues)
+### 3.24 Análise estática (security-issues) — [detalhamento](detalhamento/3.24-analise-estatica-security.md)
 
 ```bash
 # Listar arquivos com problemas (Dockerfile com USER root, deployment com secret em command, env com senha)
